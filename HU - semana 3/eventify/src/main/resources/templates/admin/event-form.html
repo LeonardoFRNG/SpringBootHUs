@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: header('Eventify - Registrar Evento')}">
+    <title>Eventify - Registrar Evento</title>
+</head>
+<body>
+
+    <!-- Barra de navegación -->
+    <div th:replace="~{fragments/layout :: navbar}"></div>
+
+    <!-- Alertas -->
+    <div th:replace="~{fragments/layout :: alerts}"></div>
+
+    <!-- Contenido Principal -->
+    <main class="main-content container my-4">
+        <div class="row justify-content-center">
+            <div class="col-lg-8 col-md-10">
+                <nav aria-label="breadcrumb" class="mb-3">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a th:href="@{/admin}">Panel Principal</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Nuevo Evento</li>
+                    </ol>
+                </nav>
+
+                <div class="card-custom">
+                    <div class="card-custom-header d-flex align-items-center gap-2">
+                        <i class="bi bi-calendar-plus text-primary fs-4"></i>
+                        <h2 class="h5 mb-0 fw-semibold">Registrar Nuevo Evento</h2>
+                    </div>
+                    <div class="p-4">
+                        <form th:action="@{/admin/events}" th:object="${event}" method="post">
+                            
+                            <!-- Campo: Nombre -->
+                            <div class="mb-3">
+                                <label for="nombre" class="form-label fw-semibold">
+                                    Nombre del Evento <span class="text-danger">*</span>
+                                </label>
+                                <input type="text" 
+                                       id="nombre" 
+                                       class="form-control" 
+                                       th:field="*{nombre}" 
+                                       placeholder="Ej. Conferencia de Arquitectura de Software 2026" 
+                                       required 
+                                       maxlength="150" />
+                                <div class="form-text">Asigna un nombre descriptivo para el evento.</div>
+                            </div>
+
+                            <!-- Campo: Fecha -->
+                            <div class="mb-3">
+                                <label for="fecha" class="form-label fw-semibold">
+                                    Fecha del Evento <span class="text-danger">*</span>
+                                </label>
+                                <input type="date" 
+                                       id="fecha" 
+                                       class="form-control" 
+                                       th:field="*{fecha}" 
+                                       required />
+                                <div class="form-text">Selecciona la fecha programada en el calendario.</div>
+                            </div>
+
+                            <!-- Campo: Descripción -->
+                            <div class="mb-4">
+                                <label for="descripcion" class="form-label fw-semibold">Descripción</label>
+                                <textarea id="descripcion" 
+                                          class="form-control" 
+                                          th:field="*{descripcion}" 
+                                          rows="4" 
+                                          placeholder="Detalles, agenda temática, ponentes o información relevante del evento..." 
+                                          maxlength="500"></textarea>
+                                <div class="form-text">Máximo 500 caracteres.</div>
+                            </div>
+
+                            <!-- Botones de Acción -->
+                            <div class="d-flex justify-content-end gap-2 pt-3 border-top">
+                                <a th:href="@{/admin}" class="btn btn-outline-secondary">
+                                    <i class="bi bi-x-circle me-1"></i>Cancelar
+                                </a>
+                                <button type="submit" class="btn btn-primary d-flex align-items-center gap-1">
+                                    <i class="bi bi-check-lg"></i>
+                                    <span>Guardar</span>
+                                </button>
+                            </div>
+
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Pie de página -->
+    <div th:replace="~{fragments/layout :: footer}"></div>
+
+</body>
+</html>
