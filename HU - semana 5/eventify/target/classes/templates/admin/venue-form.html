@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: header('Eventify - Registrar Lugar')}">
+    <title>Eventify - Registrar Lugar</title>
+</head>
+<body>
+
+    <!-- Barra de navegación -->
+    <div th:replace="~{fragments/layout :: navbar}"></div>
+
+    <!-- Alertas -->
+    <div th:replace="~{fragments/layout :: alerts}"></div>
+
+    <!-- Contenido Principal -->
+    <main class="main-content container my-4">
+        <div class="row justify-content-center">
+            <div class="col-lg-8 col-md-10">
+                <nav aria-label="breadcrumb" class="mb-3">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a th:href="@{/admin}">Panel Principal</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Nuevo Lugar</li>
+                    </ol>
+                </nav>
+
+                <div class="card card-custom">
+                    <div class="card-custom-header d-flex align-items-center gap-2">
+                        <i class="bi bi-geo-alt-fill text-success fs-4"></i>
+                        <h2 class="h5 mb-0 fw-semibold">Registrar Nuevo Lugar (Venue)</h2>
+                    </div>
+                    <div class="p-4">
+                        <form th:action="@{/admin/venues}" th:object="${venue}" method="post" novalidate>
+                            
+                            <!-- Campo: Nombre -->
+                            <div class="mb-3">
+                                <label for="nombre" class="form-label fw-semibold">
+                                    Nombre del Lugar <span class="text-danger">*</span>
+                                </label>
+                                <input type="text" 
+                                       id="nombre" 
+                                       class="form-control" 
+                                       th:classappend="${#fields.hasErrors('nombre')} ? 'is-invalid campo-invalido'" 
+                                       th:field="*{nombre}" 
+                                       placeholder="Ej. Centro de Eventos y Convenciones del Norte" 
+                                       maxlength="150" />
+                                <div class="invalid-feedback invalid-feedback-custom" th:if="${#fields.hasErrors('nombre')}" th:errors="*{nombre}"></div>
+                                <div class="form-text">Indica el nombre o razón social del espacio.</div>
+                            </div>
+
+                            <!-- Campo: Ciudad (Obligatorio en HU Semana 4) -->
+                            <div class="mb-3">
+                                <label for="city" class="form-label fw-semibold">
+                                    Ciudad <span class="text-danger">*</span>
+                                </label>
+                                <input type="text" 
+                                       id="city" 
+                                       class="form-control" 
+                                       th:classappend="${#fields.hasErrors('city')} ? 'is-invalid campo-invalido'" 
+                                       th:field="*{city}" 
+                                       placeholder="Ej. Bogotá, Medellín, Barranquilla, Cali..." 
+                                       maxlength="100" />
+                                <div class="invalid-feedback invalid-feedback-custom" th:if="${#fields.hasErrors('city')}" th:errors="*{city}">
+                                    La ciudad de la sede es obligatoria.
+                                </div>
+                                <div class="form-text">Ciudad en la que se ubica la sede (utilizada en filtros de búsqueda).</div>
+                            </div>
+
+                            <!-- Campo: Dirección -->
+                            <div class="mb-3">
+                                <label for="direccion" class="form-label fw-semibold">
+                                    Dirección <span class="text-danger">*</span>
+                                </label>
+                                <input type="text" 
+                                       id="direccion" 
+                                       class="form-control" 
+                                       th:classappend="${#fields.hasErrors('direccion')} ? 'is-invalid campo-invalido'" 
+                                       th:field="*{direccion}" 
+                                       placeholder="Ej. Carrera 53 # 106-280" 
+                                       maxlength="200" />
+                                <div class="invalid-feedback invalid-feedback-custom" th:if="${#fields.hasErrors('direccion')}" th:errors="*{direccion}"></div>
+                                <div class="form-text">Ubicación física completa del lugar.</div>
+                            </div>
+
+                            <!-- Campo: Capacidad -->
+                            <div class="mb-4">
+                                <label for="capacidad" class="form-label fw-semibold">
+                                    Capacidad Máxima <span class="text-danger">*</span>
+                                </label>
+                                <input type="number" 
+                                       id="capacidad" 
+                                       class="form-control" 
+                                       th:classappend="${#fields.hasErrors('capacidad')} ? 'is-invalid campo-invalido'" 
+                                       th:field="*{capacidad}" 
+                                       min="1" 
+                                       placeholder="Ej. 1200" />
+                                <div class="invalid-feedback invalid-feedback-custom" th:if="${#fields.hasErrors('capacidad')}" th:errors="*{capacidad}"></div>
+                                <div class="form-text">Aforo máximo de personas permitido (debe ser mayor a 0).</div>
+                            </div>
+
+                            <!-- Botones de Acción -->
+                            <div class="d-flex justify-content-end gap-2 pt-3 border-top">
+                                <a th:href="@{/admin}" class="btn btn-outline-secondary">
+                                    <i class="bi bi-x-circle me-1"></i>Cancelar
+                                </a>
+                                <button type="submit" class="btn btn-success d-flex align-items-center gap-1 shadow-sm">
+                                    <i class="bi bi-check-lg"></i>
+                                    <span>Guardar</span>
+                                </button>
+                            </div>
+
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Pie de página -->
+    <div th:replace="~{fragments/layout :: footer}"></div>
+
+</body>
+</html>

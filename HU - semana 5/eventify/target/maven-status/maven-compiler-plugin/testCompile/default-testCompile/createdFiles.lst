@@ -1,0 +1,15 @@
+com/eventify/validation/ValidationTest.class
+com/eventify/service/EventServiceTest.class
+com/eventify/DomainAndPersistenceTest.class
+com/eventify/controller/ThymeleafValidationMvcTest.class
+com/eventify/EventifyApplicationTests.class
+com/eventify/controller/EventApiControllerTest.class
+com/eventify/service/VenueServiceTest.class
+com/eventify/AdvancedSearchTest.class
+com/eventify/exception/GlobalExceptionHandlerTest.class
+com/eventify/controller/AdminControllerTest.class
+com/eventify/repository/EventRepositoryTest.class
+com/eventify/FlywayMigrationAndInfrastructureTest.class
+com/eventify/controller/CategoryApiControllerTest.class
+com/eventify/mapper/MapStructAndDtoTest.class
+com/eventify/controller/VenueApiControllerTest.class

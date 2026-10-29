@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: header(${isEdit} ? 'Eventify - Editar Evento' : 'Eventify - Registrar Evento')}">
+    <title>Eventify - Registrar Evento</title>
+</head>
+<body>
+
+    <!-- Barra de navegación -->
+    <div th:replace="~{fragments/layout :: navbar}"></div>
+
+    <!-- Alertas -->
+    <div th:replace="~{fragments/layout :: alerts}"></div>
+
+    <!-- Contenido Principal -->
+    <main class="main-content container my-4">
+        <div class="row justify-content-center">
+            <div class="col-lg-9 col-md-11">
+                <nav aria-label="breadcrumb" class="mb-3">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a th:href="@{/admin}">Panel Principal</a></li>
+                        <li class="breadcrumb-item active" aria-current="page" th:text="${isEdit} ? 'Editar Evento' : 'Nuevo Evento'">Nuevo Evento</li>
+                    </ol>
+                </nav>
+
+                <div class="card card-custom">
+                    <div class="card-custom-header d-flex align-items-center gap-2">
+                        <i th:class="${isEdit} ? 'bi bi-pencil-square text-primary fs-4' : 'bi bi-calendar-plus text-primary fs-4'"></i>
+                        <h2 class="h5 mb-0 fw-semibold" th:text="${isEdit} ? 'Editar Evento #' + ${event.id} : 'Registrar Nuevo Evento'">Registrar Nuevo Evento</h2>
+                    </div>
+                    <div class="p-4">
+                        <form th:action="${isEdit} ? @{/admin/events/{id}/edit(id=${event.id})} : @{/admin/events}" 
+                              th:object="${event}" 
+                              method="post"
+                              novalidate>
+                            
+                            <!-- Campo oculto para ID en edición -->
+                            <input type="hidden" th:if="${isEdit}" th:field="*{id}" />
+
+                            <!-- Campo: Nombre -->
+                            <div class="mb-3">
+                                <label for="nombre" class="form-label fw-semibold">
+                                    Nombre del Evento <span class="text-danger">*</span>
+                                </label>
+                                <input type="text" 
+                                       id="nombre" 
+                                       class="form-control" 
+                                       th:classappend="${#fields.hasErrors('nombre')} ? 'is-invalid campo-invalido'" 
+                                       th:field="*{nombre}" 
+                                       placeholder="Ej. Conferencia de Arquitectura de Software 2026" 
+                                       maxlength="150" />
+                                <div class="invalid-feedback invalid-feedback-custom" th:if="${#fields.hasErrors('nombre')}" th:errors="*{nombre}">
+                                    El nombre del evento es obligatorio.
+                                </div>
+                                <div class="form-text">Asigna un nombre descriptivo para el evento.</div>
+                            </div>
+
+                            <!-- Campo: Fecha -->
+                            <div class="mb-3">
+                                <label for="fecha" class="form-label fw-semibold">
+                                    Fecha del Evento <span class="text-danger">*</span>
+                                </label>
+                                <input type="date" 
+                                       id="fecha" 
+                                       class="form-control" 
+                                       th:classappend="${#fields.hasErrors('fecha')} ? 'is-invalid campo-invalido'" 
+                                       th:field="*{fecha}" />
+                                <div class="invalid-feedback invalid-feedback-custom" th:if="${#fields.hasErrors('fecha')}" th:errors="*{fecha}">
+                                    La fecha del evento es obligatoria.
+                                </div>
+                                <div class="form-text">Selecciona la fecha programada en el calendario.</div>
+                            </div>
+
+                            <!-- Campo: Sede / Venue (Desplegable Obligatorio) -->
+                            <div class="mb-3">
+                                <label for="venueId" class="form-label fw-semibold">
+                                    Lugar o Sede (Venue) <span class="text-danger">*</span>
+                                </label>
+                                <select id="venueId" 
+                                        class="form-select" 
+                                        th:classappend="${#fields.hasErrors('venueId')} ? 'is-invalid campo-invalido'" 
+                                        th:field="*{venueId}">
+                                    <option value="" disabled th:selected="*{venueId == null}">-- Selecciona una sede disponible --</option>
+                                    <option th:each="v : ${venues}" 
+                                            th:value="${v.id}" 
+                                            th:text="${v.nombre + ' — ' + v.city + ' (Capacidad: ' + v.capacidad + ' personas)'}">
+                                        Movistar Arena — Bogotá (Capacidad: 14000 personas)
+                                    </option>
+                                </select>
+                                <div class="invalid-feedback invalid-feedback-custom" th:if="${#fields.hasErrors('venueId')}" th:errors="*{venueId}">
+                                    Debes seleccionar una sede válida para el evento.
+                                </div>
+                                <div class="form-text">Cada evento debe asociarse obligatoriamente a una sede física.</div>
+                            </div>
+
+                            <!-- Campo: Categorías (Múltiples Checkboxes) -->
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold d-block">
+                                    Categorías del Evento
+                                </label>
+                                <div class="p-3 bg-light rounded border">
+                                    <div class="row g-2">
+                                        <div class="col-md-4 col-sm-6" th:each="cat : ${categories}">
+                                            <div class="form-check">
+                                                <input class="form-check-input" 
+                                                       type="checkbox" 
+                                                       th:field="*{categoryIds}" 
+                                                       th:value="${cat.id}" 
+                                                       th:id="${'cat_' + cat.id}">
+                                                <label class="form-check-label fw-medium" 
+                                                       th:for="${'cat_' + cat.id}">
+                                                    <span th:text="${cat.name}">Concerts</span>
+                                                    <small class="text-muted d-block" style="font-size: 0.75rem;" th:text="${cat.description}"></small>
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div th:if="${#lists.isEmpty(categories)}" class="text-muted small">
+                                        No hay categorías cargadas en el sistema.
+                                    </div>
+                                </div>
+                                <div class="form-text">Un evento puede pertenecer a varias categorías simultáneamente.</div>
+                            </div>
+
+                            <!-- Campo: Descripción -->
+                            <div class="mb-4">
+                                <label for="descripcion" class="form-label fw-semibold">Descripción</label>
+                                <textarea id="descripcion" 
+                                          class="form-control" 
+                                          th:classappend="${#fields.hasErrors('descripcion')} ? 'is-invalid'" 
+                                          th:field="*{descripcion}" 
+                                          rows="3" 
+                                          placeholder="Detalles, agenda temática, ponentes o información relevante del evento..." 
+                                          maxlength="500"></textarea>
+                                <div class="invalid-feedback" th:if="${#fields.hasErrors('descripcion')}" th:errors="*{descripcion}"></div>
+                                <div class="form-text">Máximo 500 caracteres.</div>
+                            </div>
+
+                            <!-- Botones de Acción -->
+                            <div class="d-flex justify-content-end gap-2 pt-3 border-top">
+                                <a th:href="@{/admin}" class="btn btn-outline-secondary">
+                                    <i class="bi bi-x-circle me-1"></i>Cancelar
+                                </a>
+                                <button type="submit" class="btn btn-primary d-flex align-items-center gap-1 shadow-sm">
+                                    <i class="bi bi-check-lg"></i>
+                                    <span th:text="${isEdit} ? 'Actualizar Evento' : 'Guardar Evento'">Guardar</span>
+                                </button>
+                            </div>
+
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Pie de página -->
+    <div th:replace="~{fragments/layout :: footer}"></div>
+
+</body>
+</html>
